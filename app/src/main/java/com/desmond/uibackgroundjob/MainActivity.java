@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        BackgroundTaskManager.cancelAll();
+        BackgroundTaskManager.cancelAllNonPersistedTasks();
         super.onDestroy();
     }
 }

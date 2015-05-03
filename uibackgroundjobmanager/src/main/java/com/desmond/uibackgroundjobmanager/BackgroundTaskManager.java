@@ -1,5 +1,7 @@
 package com.desmond.uibackgroundjobmanager;
 
+import android.util.Log;
+
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -21,8 +23,8 @@ public class BackgroundTaskManager {
      * available in current Android implementations.
      */
     private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-    private static final int CORE_POOL_SIZE = 4;
-    private static final int MAXIMUM_POOL_SIZE = 4;
+    private static final int CORE_POOL_SIZE = 2;
+    private static final int MAXIMUM_POOL_SIZE = 2;
 
     private final Queue<BackgroundTask> mBackgroundTaskWorkQueue;
     private final Queue<BackgroundTask> mExecutingTaskWorkQueue;
@@ -82,33 +84,29 @@ public class BackgroundTaskManager {
     /**
      * Cancels all the Threads in the ThreadPool
      */
-    public static void cancelAll() {
-        Runnable[] taskArray =  new TaskRunnable[getInstance().mBackgroundWorkQueue.size()];
-        getInstance().mBackgroundWorkQueue.toArray(taskArray);
-
-        BackgroundTask[] executingTaskArray = new BackgroundTask[getInstance().mExecutingTaskWorkQueue.size()];
-        getInstance().mExecutingTaskWorkQueue.toArray(executingTaskArray);
+    public static void cancelAllNonPersistedTasks() {
+        BackgroundTask[] taskArray = new BackgroundTask[getInstance().mExecutingTaskWorkQueue.size()];
+        getInstance().mExecutingTaskWorkQueue.toArray(taskArray);
 
         int taskArrayLen = taskArray.length;
-        int currentTaskArrayLen = executingTaskArray.length;
 
         synchronized (sInstance) {
+            Thread thread;
+            TaskRunnable runnable;
+            BackgroundTask task;
             for (int i = 0; i < taskArrayLen; i++) {
-                TaskRunnable runnable = (TaskRunnable) taskArray[i];
+                task = taskArray[i];
+                thread = task.getCurrentThread();
+                runnable = task.getTaskRunnable();
 
                 if (!runnable.mShouldPersist) {
-                    getInstance().mTaskThreadPool.remove(runnable);
-                }
-            }
-
-            for (int i = 0; i < currentTaskArrayLen; i++) {
-                Thread thread = executingTaskArray[i].getCurrentThread();
-
-                if (!executingTaskArray[i].getTaskRunnable().mShouldPersist) {
                     if (thread != null) {
                         thread.interrupt();
                     }
-                    getInstance().mExecutingTaskWorkQueue.remove(executingTaskArray[i]);
+                    getInstance().mTaskThreadPool.remove(runnable);
+                    getInstance().mExecutingTaskWorkQueue.remove(task);
+                } else {
+                    Log.d("Manager", "task should be persisted");
                 }
             }
         }

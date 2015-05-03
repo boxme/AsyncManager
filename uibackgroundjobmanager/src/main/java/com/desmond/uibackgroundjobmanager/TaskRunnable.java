@@ -40,6 +40,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
     public void run() {
         try {
             checkForThreadInterruption();
+            if (mTask == null) return;
             mTask.setCurrentThread(Thread.currentThread());
 
             if (mStatus.isWaiting()) {
@@ -58,6 +59,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
         } catch (InterruptedException e) {
             Log.d(TAG, "thread is interrupted");
         } finally {
+            Log.d(TAG, "clean up");
             cleanUp();
             // Clears the Thread's interrupt flag
             Thread.interrupted();
@@ -99,7 +101,6 @@ public abstract class TaskRunnable<T, K> implements Runnable {
         mResult = null;
         mResultHandler = null;
         mTask = null;
-        mShouldPersist = false;
     }
 
     void setTask(BackgroundTask task) {
