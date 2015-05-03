@@ -40,7 +40,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
     public void run() {
         try {
             checkForThreadInterruption();
-            if (mTask == null) return;
+//            if (mTask == null) return;
             mTask.setCurrentThread(Thread.currentThread());
 
             if (mStatus.isWaiting()) {

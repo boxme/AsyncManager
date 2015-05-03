@@ -113,6 +113,7 @@ public class BackgroundTaskManager {
     }
 
     void recycleBackgroundTask(BackgroundTask task) {
+        Log.d("Manager", "recycle background task");
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);
         mBackgroundTaskWorkQueue.offer(task);

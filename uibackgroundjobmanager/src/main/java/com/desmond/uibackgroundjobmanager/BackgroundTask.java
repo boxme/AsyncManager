@@ -36,14 +36,11 @@ public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
 
     @Override
     public void completedJob() {
-        if (mTaskManager != null) {
-            mTaskManager.recycleBackgroundTask(this);
-        }
+        mTaskManager.recycleBackgroundTask(this);
     }
 
     void recycle() {
         mCurrentThread = null;
         mTaskRunnable = null;
-        mTaskManager = null;
     }
 }
