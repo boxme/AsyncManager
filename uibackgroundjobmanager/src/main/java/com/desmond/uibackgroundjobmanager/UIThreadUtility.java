@@ -9,18 +9,15 @@ import android.os.Looper;
 public class UIThreadUtility {
     private static Handler mHandler;
 
-    public static Handler getHandler() {
-        if (mHandler == null) {
-            mHandler = new Handler(Looper.getMainLooper());
-        }
-        return mHandler;
+    static {
+        mHandler = new Handler(Looper.getMainLooper());
     }
 
     public static void post(Runnable run) {
-        getHandler().post(run);
+        mHandler.post(run);
     }
 
     public static void removePost(Runnable run) {
-        getHandler().removeCallbacks(run);
+        mHandler.removeCallbacks(run);
     }
 }

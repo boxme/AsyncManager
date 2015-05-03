@@ -1,12 +1,19 @@
 package com.desmond.uibackgroundjob;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.desmond.uibackgroundjobmanager.BackgroundTaskManager;
+import com.desmond.uibackgroundjobmanager.TaskRunnable;
+import com.desmond.uibackgroundjobmanager.PersistedTaskRunnable;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,25 +21,45 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void startBackgroundJob(View view) {
+        final TextView textview = (TextView) findViewById(R.id.result);
+
+        BackgroundTaskManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+
+            @Override
+            public String operation() {
+                int number = 0;
+                for (int i = 0; i < 1000000000; i++) {
+                    number++;
+                }
+                return String.valueOf(number);
+            }
+
+            @Override
+            public void callback(String result) {
+                textview.setText(result);
+            }
+
+        });
+    }
+
+    public void startPersistedTask(View view) {
+        BackgroundTaskManager.runBackgroundTask(new PersistedTaskRunnable() {
+            @Override
+            public Void operation() {
+                int number = 0;
+                for (int i = 0; i < 900000000; i++) {
+                    number++;
+                }
+                Log.d(TAG, "number is " + number);
+                return null;
+            }
+        });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    protected void onDestroy() {
+        BackgroundTaskManager.cancelAll();
+        super.onDestroy();
     }
 }

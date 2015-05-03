@@ -5,7 +5,6 @@ package com.desmond.uibackgroundjobmanager;
  */
 public class AsyncStatus {
 
-    public static final int STATE_ACTION_CANCEL = -1;
     public static final int STATE_ACTION_WAITING = 0;
     public static final int STATE_ACTION_STARTED = 1;
     public static final int STATE_ACTION_COMPLETED = 2;
@@ -14,10 +13,6 @@ public class AsyncStatus {
 
     public AsyncStatus() {
         mStatus = STATE_ACTION_WAITING;
-    }
-
-    public boolean isCanceled() {
-        return mStatus == STATE_ACTION_CANCEL;
     }
 
     public boolean isWaiting() {
@@ -32,10 +27,6 @@ public class AsyncStatus {
         return mStatus == STATE_ACTION_COMPLETED;
     }
 
-    public void cancel() {
-        mStatus = STATE_ACTION_CANCEL;
-    }
-
     public void completed() {
         mStatus = STATE_ACTION_COMPLETED;
     }
@@ -46,5 +37,21 @@ public class AsyncStatus {
 
     public void waiting() {
         mStatus = STATE_ACTION_WAITING;
+    }
+
+    public String getMessage() {
+        switch (mStatus) {
+            case STATE_ACTION_WAITING:
+                return "Waiting to be processed";
+
+            case STATE_ACTION_STARTED:
+                return "Processing results";
+
+            case STATE_ACTION_COMPLETED:
+                return "Processing completed";
+
+            default:
+                throw new IllegalArgumentException("Wrong status");
+        }
     }
 }

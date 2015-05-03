@@ -1,11 +1,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="No result"/>
+
+    <Button
+        android:id="@+id/start_background_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Task"
+        android:layout_centerInParent="true"
+        android:onClick="startBackgroundJob"/>
+
+    <Button
+        android:id="@+id/start_persisted_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Persisted Task"
+        android:layout_below="@id/start_background_task"
+        android:layout_centerHorizontal="true"
+        android:onClick="startPersistedTask"/>
 
 </RelativeLayout>
