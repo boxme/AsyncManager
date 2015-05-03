@@ -21,10 +21,9 @@ public class TaskManager {
      * available in current Android implementations.
      */
     private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-    private static final int CORE_POOL_SIZE = 8;
-    private static final int MAXIMUM_POOL_SIZE = 8;
+    private static final int CORE_POOL_SIZE = 4;
+    private static final int MAXIMUM_POOL_SIZE = 4;
 
-    // A queue of Runnables for the background job pool
     private final BlockingQueue<Runnable> mBackgroundWorkQueue;
     private final ThreadPoolExecutor mTaskThreadPool;
 
@@ -35,18 +34,19 @@ public class TaskManager {
     }
 
     private TaskManager() {
-
         // List queue that blocks when the queue is empty
         mBackgroundWorkQueue = new LinkedBlockingQueue<>();
 
         mTaskThreadPool = new ThreadPoolExecutor(
                 CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
                 KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, mBackgroundWorkQueue);
-
-
     }
 
     public static TaskManager getInstance() {
         return sInstance;
+    }
+
+    public static void runBackgroundTask(Runnable run) {
+        sInstance.mTaskThreadPool.execute(run);
     }
 }
