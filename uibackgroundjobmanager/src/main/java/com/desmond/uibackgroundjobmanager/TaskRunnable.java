@@ -88,7 +88,8 @@ public abstract class TaskRunnable<T, K> implements Runnable {
     }
 
     private boolean isActive() {
-        if (mResultHandler == null && mTask != null) return true;
+        if (mTask == null)          return false;
+        if (mResultHandler == null) return true;
 
         K handler = mResultHandler.get();
         return handler != null;
