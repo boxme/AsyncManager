@@ -110,7 +110,7 @@ public class BackgroundTaskManager {
         }
     }
 
-    void recycleBackgroundTask(BackgroundTask task) {
+    protected void recycleBackgroundTask(BackgroundTask task) {
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);
         mBackgroundTaskWorkQueue.offer(task);

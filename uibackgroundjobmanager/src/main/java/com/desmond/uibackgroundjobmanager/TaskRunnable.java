@@ -107,11 +107,11 @@ public abstract class TaskRunnable<T, K> implements Runnable {
         }
     }
 
-    void setTask(BackgroundTask task) {
+    public void setTask(BackgroundTask task) {
         mTask = task;
     }
 
-    BackgroundTask getTask() {
+    public BackgroundTask getTask() {
         return mTask;
     }
 }

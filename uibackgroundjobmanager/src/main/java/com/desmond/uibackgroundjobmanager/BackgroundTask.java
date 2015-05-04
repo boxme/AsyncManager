@@ -39,7 +39,7 @@ public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
         BackgroundTaskManager.getInstance().recycleBackgroundTask(this);
     }
 
-    void recycle() {
+    protected void recycle() {
         mCurrentThread = null;
         mTaskRunnable = null;
     }

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void callback(String result) {
-                for (int i = 0; i < 100000000; i++) {}
+                for (int i = 0; i < 10000000; i++) {}
                 textview.setText(result);
             }
 

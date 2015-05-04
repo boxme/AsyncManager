@@ -16,43 +16,43 @@ public class AsyncStatus {
         mStatus = STATE_ACTION_WAITING;
     }
 
-    public boolean isWaiting() {
+    boolean isWaiting() {
         return mStatus == STATE_ACTION_WAITING;
     }
 
-    public boolean isStarted() {
+    boolean isStarted() {
         return mStatus == STATE_ACTION_STARTED;
     }
 
-    public boolean isCompleted() {
+    boolean isCompleted() {
         return mStatus == STATE_ACTION_COMPLETED;
     }
 
-    public boolean isCancelled() {
+    boolean isCancelled() {
         return mStatus == STATE_ACTION_CANCELLED;
     }
 
-    public void completed() {
+    void completed() {
         mStatus = STATE_ACTION_COMPLETED;
     }
 
-    public void started() {
+    void started() {
         mStatus = STATE_ACTION_STARTED;
     }
 
-    public void waiting() {
+    void waiting() {
         mStatus = STATE_ACTION_WAITING;
     }
 
-    public void cancelled() {
+    void cancelled() {
         mStatus = STATE_ACTION_CANCELLED;
     }
 
-    public boolean isCleanable() {
+    boolean isCleanable() {
         return isCancelled() || isCompleted();
     }
 
-    public String getMessage() {
+    String getMessage() {
         switch (mStatus) {
             case STATE_ACTION_CANCELLED:
                 return "Cancelled";
