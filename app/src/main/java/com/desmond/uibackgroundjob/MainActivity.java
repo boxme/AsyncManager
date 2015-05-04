@@ -40,7 +40,35 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < 10000000; i++) {}
                 textview.setText(result);
             }
+        });
+    }
 
+    public void startBackgroundJobWithHandler(View view) {
+        final TextView textview = (TextView) findViewById(R.id.result);
+
+        BackgroundTaskManager.runBackgroundTask(new TaskRunnable<String, MainActivity>(this) {
+
+            @Override
+            public String operation() {
+                int number = 0;
+                for (int i = 0; i < 1000000000; i++) {
+                    number++;
+                }
+                return String.valueOf(number);
+            }
+
+            @Override
+            public void callback(String result) {
+                for (int i = 0; i < 10000000; i++) {}
+                textview.setText("result without handler");
+                Log.d(TAG, "no handler result");
+            }
+
+            @Override
+            public void callback(MainActivity handler, String result) {
+                handler.setText("result with handler");
+                Log.d(TAG, "handler result");
+            }
         });
     }
 
@@ -61,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < 10000000; i++) {}
             }
         });
+    }
+
+    public void setText(String text) {
+        final TextView textview = (TextView) findViewById(R.id.result);
+        textview.setText(text);
     }
 
     @Override

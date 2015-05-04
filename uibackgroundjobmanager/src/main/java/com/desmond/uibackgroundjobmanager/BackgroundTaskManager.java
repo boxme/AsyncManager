@@ -119,8 +119,8 @@ public class BackgroundTaskManager {
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);
         mBackgroundTaskWorkQueue.offer(task);
-//        Log.d("Manager", "executing queue size " + mExecutingTaskWorkQueue.size());
-//        Log.d("Manager", "work queue size " + mBackgroundTaskWorkQueue.size());
+        Log.d("Manager", "executing queue size " + mExecutingTaskWorkQueue.size());
+        Log.d("Manager", "work queue size " + mBackgroundTaskWorkQueue.size());
     }
 
     public static void cleanUp() {

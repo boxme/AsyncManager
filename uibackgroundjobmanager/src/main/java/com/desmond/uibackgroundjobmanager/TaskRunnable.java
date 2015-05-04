@@ -38,7 +38,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
 
     @Override
     public void run() {
-//        final long threadId = Thread.currentThread().getId();
+        final long threadId = Thread.currentThread().getId();
         try {
             checkForThreadInterruption();
             mTask.setCurrentThread(Thread.currentThread());
@@ -58,9 +58,9 @@ public abstract class TaskRunnable<T, K> implements Runnable {
             }
         } catch (InterruptedException e) {
             mStatus.cancelled();
-//            Log.d(TAG, threadId + " thread is interrupted");
+            Log.d(TAG, threadId + " thread is interrupted");
         } finally {
-//            Log.d(TAG, threadId + " clean up");
+            Log.d(TAG, threadId + " clean up");
             cleanUp();
             // Clears the Thread's interrupt flag
             Thread.interrupted();
@@ -79,17 +79,19 @@ public abstract class TaskRunnable<T, K> implements Runnable {
     }
 
     private void callback() {
-        if (isActive()) {
-            if (mResultHandler == null) {
-                callback(mResult);
-            } else {
-                callback(mResultHandler.get(), mResult);
+        synchronized (this) {
+            if (isActive()) {
+                if (mResultHandler == null) {
+                    callback(mResult);
+                } else {
+                    callback(mResultHandler.get(), mResult);
+                }
             }
         }
     }
 
     private boolean isActive() {
-        if (mResultHandler == null) return true;
+        if (mResultHandler == null && mTask != null) return true;
 
         K handler = mResultHandler.get();
         return handler != null;

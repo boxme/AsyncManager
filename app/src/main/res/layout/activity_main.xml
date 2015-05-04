@@ -20,11 +20,20 @@
         android:onClick="startBackgroundJob"/>
 
     <Button
+        android:id="@+id/start_background_task_with_handler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Task With Handler"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/start_background_task"
+        android:onClick="startBackgroundJobWithHandler"/>
+
+    <Button
         android:id="@+id/start_persisted_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Persisted Task"
-        android:layout_below="@id/start_background_task"
+        android:layout_below="@id/start_background_task_with_handler"
         android:layout_centerHorizontal="true"
         android:onClick="startPersistedTask"/>
 
