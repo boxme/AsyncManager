@@ -1,1 +1,1 @@
-include ':app', ':uibackgroundjobmanager'
+include ':app', ':asyncmanager'
