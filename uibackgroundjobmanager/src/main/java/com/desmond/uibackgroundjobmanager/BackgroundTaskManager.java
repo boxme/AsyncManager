@@ -70,15 +70,20 @@ public class BackgroundTaskManager {
         return backgroundTask;
     }
 
-    public static void removeBackgroundTask(BackgroundTask backgroundTask) {
+    public static void cancelNonPersistedTask(BackgroundTask backgroundTask) {
         synchronized (sInstance) {
             Thread thread = backgroundTask.getCurrentThread();
+            TaskRunnable runnable = backgroundTask.getTaskRunnable();
 
-            if (thread != null) {
-                thread.interrupt();
+            if (!runnable.mShouldPersist) {
+                if (thread != null) {
+                    thread.interrupt();
+                }
+
+                getInstance().mTaskThreadPool.remove(runnable);
+                getInstance().mExecutingTaskWorkQueue.remove(backgroundTask);
             }
         }
-        getInstance().mTaskThreadPool.remove(backgroundTask.getTaskRunnable());
     }
 
     /**
@@ -110,7 +115,7 @@ public class BackgroundTaskManager {
         }
     }
 
-    protected void recycleBackgroundTask(BackgroundTask task) {
+    void recycleBackgroundTask(BackgroundTask task) {
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);
         mBackgroundTaskWorkQueue.offer(task);

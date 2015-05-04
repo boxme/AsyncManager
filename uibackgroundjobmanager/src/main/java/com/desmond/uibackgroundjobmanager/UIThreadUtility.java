@@ -13,11 +13,11 @@ public class UIThreadUtility {
         mHandler = new Handler(Looper.getMainLooper());
     }
 
-    public static void post(Runnable run) {
+    static void post(Runnable run) {
         mHandler.post(run);
     }
 
-    public static void removePost(Runnable run) {
+    static void removePost(Runnable run) {
         mHandler.removeCallbacks(run);
     }
 }
