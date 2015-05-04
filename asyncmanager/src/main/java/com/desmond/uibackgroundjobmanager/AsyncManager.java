@@ -1,5 +1,6 @@
 package com.desmond.uibackgroundjobmanager;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.Queue;
@@ -29,6 +30,11 @@ public class AsyncManager {
     private static final int CORE_POOL_SIZE = 2;
     private static final int MAXIMUM_POOL_SIZE = 2;
 
+    /**
+     * Limit the number of BackgroundTask that's kept in the mBackgroundTaskWorkQueue.
+     * Excess BackgroundTask can be gc after finishing from mExecutingTaskWorkQueue.
+     */
+    private static final int MAX_QUEUE_SIZE = 10;
     private final Queue<BackgroundTask> mBackgroundTaskWorkQueue;
     private final Queue<BackgroundTask> mExecutingTaskWorkQueue;
 
@@ -42,7 +48,7 @@ public class AsyncManager {
     }
 
     private AsyncManager() {
-        mBackgroundTaskWorkQueue = new LinkedBlockingQueue<>();
+        mBackgroundTaskWorkQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
         mExecutingTaskWorkQueue = new LinkedBlockingQueue<>();
 
         // List queue that blocks when the queue is empty
@@ -119,7 +125,7 @@ public class AsyncManager {
         }
     }
 
-    void recycleBackgroundTask(BackgroundTask task) {
+    void recycleBackgroundTask(@NonNull BackgroundTask task) {
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);
         mBackgroundTaskWorkQueue.offer(task);
