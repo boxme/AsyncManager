@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.desmond.uibackgroundjobmanager.BackgroundTaskManager;
+import com.desmond.uibackgroundjobmanager.AsyncManager;
 import com.desmond.uibackgroundjobmanager.TaskRunnable;
 import com.desmond.uibackgroundjobmanager.PersistedTaskRunnable;
 
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public void startBackgroundJob(View view) {
         final TextView textview = (TextView) findViewById(R.id.result);
 
-        BackgroundTaskManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+        AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
 
             @Override
             public String operation() {
@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void callback(String result) {
-                for (int i = 0; i < 10000000; i++) {}
+                for (int i = 0; i < 10000000; i++) {
+                }
                 textview.setText(result);
             }
         });
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public void startBackgroundJobWithHandler(View view) {
         final TextView textview = (TextView) findViewById(R.id.result);
 
-        BackgroundTaskManager.runBackgroundTask(new TaskRunnable<String, MainActivity>(this) {
+        AsyncManager.runBackgroundTask(new TaskRunnable<String, MainActivity>(this) {
 
             @Override
             public String operation() {
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void callback(String result) {
-                for (int i = 0; i < 10000000; i++) {}
+                for (int i = 0; i < 10000000; i++) {
+                }
                 textview.setText("result without handler");
                 Log.d(TAG, "no handler result");
             }
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startPersistedTask(View view) {
-        BackgroundTaskManager.runBackgroundTask(new PersistedTaskRunnable() {
+        AsyncManager.runBackgroundTask(new PersistedTaskRunnable() {
             @Override
             public Void operation() {
                 int number = 0;
@@ -86,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void callback(Void result) {
-                for (int i = 0; i < 10000000; i++) {}
+                for (int i = 0; i < 10000000; i++) {
+                }
             }
         });
     }
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        BackgroundTaskManager.cancelAllNonPersistedTasks();
+        AsyncManager.cancelAllNonPersistedTasks();
         super.onDestroy();
     }
 }

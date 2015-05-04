@@ -1,7 +1,5 @@
 package com.desmond.uibackgroundjobmanager;
 
-import android.util.Log;
-
 /**
  * Created by desmond on 3/5/15.
  */
@@ -36,7 +34,7 @@ public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
 
     @Override
     public void completedJob() {
-        BackgroundTaskManager.getInstance().recycleBackgroundTask(this);
+        AsyncManager.getInstance().recycleBackgroundTask(this);
     }
 
     void recycle() {

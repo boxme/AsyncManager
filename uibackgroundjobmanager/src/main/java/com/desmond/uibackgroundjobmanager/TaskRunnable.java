@@ -44,9 +44,6 @@ public abstract class TaskRunnable<T, K> implements Runnable {
             mTask.setCurrentThread(Thread.currentThread());
 
             if (mStatus.isWaiting()) {
-                // Moves the current Thread into the background
-                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-
                 mStatus.started();
                 mResult = operation();
 

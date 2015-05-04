@@ -5,12 +5,15 @@ import android.util.Log;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 /**
  * Created by desmond on 30/4/15.
  */
-public class BackgroundTaskManager {
+public class AsyncManager {
+
+    private static final String TAG = AsyncManager.class.getSimpleName();
 
     // Sets the amount of time an idle thread will wait for a task before terminating
     private static final int KEEP_ALIVE_TIME = 1;
@@ -32,13 +35,13 @@ public class BackgroundTaskManager {
     private final BlockingQueue<Runnable> mBackgroundWorkQueue;
     private final ThreadPoolExecutor mTaskThreadPool;
 
-    private static final BackgroundTaskManager sInstance;
+    private static final AsyncManager sInstance;
 
     static  {
-        sInstance = new BackgroundTaskManager();
+        sInstance = new AsyncManager();
     }
 
-    private BackgroundTaskManager() {
+    private AsyncManager() {
         mBackgroundTaskWorkQueue = new LinkedBlockingQueue<>();
         mExecutingTaskWorkQueue = new LinkedBlockingQueue<>();
 
@@ -47,10 +50,11 @@ public class BackgroundTaskManager {
 
         mTaskThreadPool = new ThreadPoolExecutor(
                 CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
-                KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, mBackgroundWorkQueue);
+                KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT,
+                mBackgroundWorkQueue, new AsyncThreadFactory());
     }
 
-    public static BackgroundTaskManager getInstance() {
+    public static AsyncManager getInstance() {
         return sInstance;
     }
 
@@ -130,5 +134,28 @@ public class BackgroundTaskManager {
     public static void setThreadPoolSize(int size) {
         getInstance().mTaskThreadPool.setCorePoolSize(size);
         getInstance().mTaskThreadPool.setMaximumPoolSize(size);
+    }
+
+    /**
+     * To set all threads created by mTaskThreadPool to have the same priority as
+     * the Android Background Thread.
+     */
+    private static final class AsyncThreadFactory implements ThreadFactory {
+
+        private static int mCount = 1;
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("LowPriority " + mCount++);
+            thread.setPriority(4);
+            thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread thread, Throwable ex) {
+                    Log.d(TAG, "Thread = " + thread.getName() + ", error = " + ex.getMessage());
+                }
+            });
+            return thread;
+        }
     }
 }
