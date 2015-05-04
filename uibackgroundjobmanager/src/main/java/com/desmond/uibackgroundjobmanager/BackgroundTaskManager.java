@@ -61,7 +61,7 @@ public class BackgroundTaskManager {
             backgroundTask = new BackgroundTask();
         }
 
-        backgroundTask.initializeTask(getInstance(), run);
+        backgroundTask.initializeTask(run);
 
         sInstance.mExecutingTaskWorkQueue.offer(backgroundTask);
 
@@ -82,7 +82,7 @@ public class BackgroundTaskManager {
     }
 
     /**
-     * Cancels all the Threads in the ThreadPool
+     * Cancels all the Threads for non persisted task in the ThreadPool
      */
     public static void cancelAllNonPersistedTasks() {
         BackgroundTask[] taskArray = new BackgroundTask[getInstance().mExecutingTaskWorkQueue.size()];
@@ -105,18 +105,17 @@ public class BackgroundTaskManager {
                     }
                     getInstance().mTaskThreadPool.remove(runnable);
                     getInstance().mExecutingTaskWorkQueue.remove(task);
-                } else {
-                    Log.d("Manager", "task should be persisted");
                 }
             }
         }
     }
 
     void recycleBackgroundTask(BackgroundTask task) {
-        Log.d("Manager", "recycle background task");
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);
         mBackgroundTaskWorkQueue.offer(task);
+//        Log.d("Manager", "executing queue size " + mExecutingTaskWorkQueue.size());
+//        Log.d("Manager", "work queue size " + mBackgroundTaskWorkQueue.size());
     }
 
     public static void cleanUp() {

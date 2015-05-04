@@ -38,9 +38,9 @@ public abstract class TaskRunnable<T, K> implements Runnable {
 
     @Override
     public void run() {
+//        final long threadId = Thread.currentThread().getId();
         try {
             checkForThreadInterruption();
-//            if (mTask == null) return;
             mTask.setCurrentThread(Thread.currentThread());
 
             if (mStatus.isWaiting()) {
@@ -49,17 +49,18 @@ public abstract class TaskRunnable<T, K> implements Runnable {
 
                 mStatus.started();
                 mResult = operation();
-                mStatus.completed();
 
                 checkForThreadInterruption();
                 UIThreadUtility.post(this);
-            } else if (mStatus.isCompleted()) {
+            } else if (mStatus.isStarted()) {
                 callback();
+                mStatus.completed();
             }
         } catch (InterruptedException e) {
-            Log.d(TAG, "thread is interrupted");
+            mStatus.cancelled();
+//            Log.d(TAG, threadId + " thread is interrupted");
         } finally {
-            Log.d(TAG, "clean up");
+//            Log.d(TAG, threadId + " clean up");
             cleanUp();
             // Clears the Thread's interrupt flag
             Thread.interrupted();
@@ -95,12 +96,15 @@ public abstract class TaskRunnable<T, K> implements Runnable {
     }
 
     private void cleanUp() {
-        if (mTask != null) mTask.completedJob();
-
-        mStatus.waiting();
-        mResult = null;
-        mResultHandler = null;
-        mTask = null;
+        synchronized (this) {
+            if (mTask != null && mStatus.isCleanable()) {
+                mTask.completedJob();
+                mResult = null;
+                mResultHandler = null;
+                mTask = null;
+            }
+            mStatus.waiting();
+        }
     }
 
     void setTask(BackgroundTask task) {

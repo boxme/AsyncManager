@@ -1,17 +1,17 @@
 package com.desmond.uibackgroundjobmanager;
 
+import android.util.Log;
+
 /**
  * Created by desmond on 3/5/15.
  */
 public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
 
     private TaskRunnable mTaskRunnable;
-    private static BackgroundTaskManager mTaskManager;
     private Thread mCurrentThread;
 
-    void initializeTask(BackgroundTaskManager jobManager, TaskRunnable taskRunnable) {
+    void initializeTask(TaskRunnable taskRunnable) {
         mTaskRunnable = taskRunnable;
-        mTaskManager = jobManager;
         taskRunnable.setTask(this);
     }
 
@@ -36,7 +36,7 @@ public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
 
     @Override
     public void completedJob() {
-        mTaskManager.recycleBackgroundTask(this);
+        BackgroundTaskManager.getInstance().recycleBackgroundTask(this);
     }
 
     void recycle() {

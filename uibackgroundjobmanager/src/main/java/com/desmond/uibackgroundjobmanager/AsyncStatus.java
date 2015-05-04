@@ -5,6 +5,7 @@ package com.desmond.uibackgroundjobmanager;
  */
 public class AsyncStatus {
 
+    public static final int STATE_ACTION_CANCELLED = -1;
     public static final int STATE_ACTION_WAITING = 0;
     public static final int STATE_ACTION_STARTED = 1;
     public static final int STATE_ACTION_COMPLETED = 2;
@@ -27,6 +28,10 @@ public class AsyncStatus {
         return mStatus == STATE_ACTION_COMPLETED;
     }
 
+    public boolean isCancelled() {
+        return mStatus == STATE_ACTION_CANCELLED;
+    }
+
     public void completed() {
         mStatus = STATE_ACTION_COMPLETED;
     }
@@ -39,8 +44,19 @@ public class AsyncStatus {
         mStatus = STATE_ACTION_WAITING;
     }
 
+    public void cancelled() {
+        mStatus = STATE_ACTION_CANCELLED;
+    }
+
+    public boolean isCleanable() {
+        return isCancelled() || isCompleted();
+    }
+
     public String getMessage() {
         switch (mStatus) {
+            case STATE_ACTION_CANCELLED:
+                return "Cancelled";
+
             case STATE_ACTION_WAITING:
                 return "Waiting to be processed";
 

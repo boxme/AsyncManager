@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void callback(String result) {
+                for (int i = 0; i < 100000000; i++) {}
                 textview.setText(result);
             }
 
@@ -53,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "number is " + number);
                 return null;
+            }
+
+            @Override
+            public void callback(Void result) {
+                for (int i = 0; i < 10000000; i++) {}
             }
         });
     }
