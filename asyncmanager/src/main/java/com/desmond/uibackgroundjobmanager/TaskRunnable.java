@@ -6,7 +6,11 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 /**
- * Created by desmond on 30/4/15.
+ * Task that runs its long operation in a background thread, and posts its result
+ * to be executed on the main UI thread.
+ *
+ * @param <Result> Expected result type from the #doLongOperation()
+ * @param <ResultHandler> Handler that might be required to handle the result on the UI thread
  */
 public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
@@ -45,6 +49,7 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
             if (mStatus.isWaiting()) {
                 mStatus.started();
+                Log.d(TAG, threadId + " thread is doing long operation");
                 mResult = doLongOperation();
 
                 checkForThreadInterruption();
@@ -57,7 +62,7 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
             mStatus.cancelled();
             Log.d(TAG, threadId + " thread is interrupted");
         } finally {
-            Log.d(TAG, threadId + " clean up");
+            Log.d(TAG, threadId + " cleaning up");
             cleanUp();
             // Clears the Thread's interrupt flag
             Thread.interrupted();
@@ -99,11 +104,11 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
         synchronized (this) {
             if (mTask != null && mStatus.isCleanable()) {
                 mTask.completedJob();
+                mStatus.isWaiting();
                 mResult = null;
                 mResultHandler = null;
                 mTask = null;
             }
-            mStatus.waiting();
         }
     }
 

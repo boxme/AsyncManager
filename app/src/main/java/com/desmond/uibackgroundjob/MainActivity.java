@@ -1,5 +1,6 @@
 package com.desmond.uibackgroundjob;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void callback(String result) {
-                for (int i = 0; i < 10000000; i++) {}
+                for (int i = 0; i < 10000000; i++) {
+                }
                 textview.setText(result);
             }
         });
@@ -90,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < 10000000; i++) {}
             }
         });
+    }
+
+    public void startListViewActivity(View view) {
+        Intent intent = new Intent(this, ListViewActivity.class);
+        startActivity(intent);
     }
 
     public void setText(String text) {

@@ -37,4 +37,12 @@
         android:layout_centerHorizontal="true"
         android:onClick="startPersistedTask"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_persisted_task"
+        android:layout_centerHorizontal="true"
+        android:text="Start ListView"
+        android:onClick="startListViewActivity"/>
+
 </RelativeLayout>
