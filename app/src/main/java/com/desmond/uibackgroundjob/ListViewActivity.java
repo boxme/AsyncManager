@@ -92,7 +92,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             viewHolder = (ViewHolder) convertView.getTag();
             final TextView textView = viewHolder.textView;
-
+            textView.setTag(false);
             if (mIsUsingAsyncManager) {
                 AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
                     @Override
@@ -107,6 +107,30 @@ public class ListViewActivity extends AppCompatActivity {
                     @Override
                     public void callback(String s) {
                         textView.setText(s);
+                    }
+                });
+
+                viewHolder.button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        textView.setTag(true);
+                        AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+                            @Override
+                            public String doLongOperation() {
+                                int value = 0;
+                                for (int i = 0; i < 200000000; ++i) {
+                                    value++;
+                                }
+                                return value + "";
+                            }
+
+                            @Override
+                            public void callback(String s) {
+                                if ((boolean) textView.getTag()) {
+                                    textView.setText(s);
+                                }
+                            }
+                        });
                     }
                 });
             } else {
