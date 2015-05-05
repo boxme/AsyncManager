@@ -9,6 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by desmond on 30/4/15.
  */
@@ -27,14 +29,14 @@ public class AsyncManager {
      * available in current Android implementations.
      */
     private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-    private static final int CORE_POOL_SIZE = 2;
-    private static final int MAXIMUM_POOL_SIZE = 2;
+    private static final int CORE_POOL_SIZE = 4;
+    private static final int MAXIMUM_POOL_SIZE = 4;
 
     /**
      * Limit the number of BackgroundTask that's kept in the mBackgroundTaskWorkQueue.
      * Excess BackgroundTask can be gc after finishing from mExecutingTaskWorkQueue.
      */
-    private static final int MAX_QUEUE_SIZE = 10;
+    private static final int MAX_QUEUE_SIZE = 8;
     private final Queue<BackgroundTask> mBackgroundTaskWorkQueue;
     private final Queue<BackgroundTask> mExecutingTaskWorkQueue;
 
@@ -148,12 +150,12 @@ public class AsyncManager {
      */
     private static final class AsyncThreadFactory implements ThreadFactory {
 
-        private static int mCount = 1;
+        private final AtomicInteger mCount = new AtomicInteger(1);
 
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = new Thread(r);
-            thread.setName("LowPriority " + mCount++);
+            thread.setName("LowPriority " + mCount.getAndAdd(1));
             thread.setPriority(4);
             thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                 @Override

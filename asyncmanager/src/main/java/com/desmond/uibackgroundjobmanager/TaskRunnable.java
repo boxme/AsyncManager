@@ -8,14 +8,14 @@ import java.lang.ref.WeakReference;
 /**
  * Created by desmond on 30/4/15.
  */
-public abstract class TaskRunnable<T, K> implements Runnable {
+public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
     private static final String TAG = TaskRunnable.class.getSimpleName();
 
     private BackgroundTask mTask;
     private AsyncStatus mStatus;
-    private WeakReference<K> mResultHandler;
-    private T mResult;
+    private WeakReference<ResultHandler> mResultHandler;
+    private Result mResult;
 
     boolean mShouldPersist = false;
 
@@ -31,7 +31,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
         mResultHandler = null;
     }
 
-    public TaskRunnable(@NonNull K resultHandler) {
+    public TaskRunnable(@NonNull ResultHandler resultHandler) {
         mStatus = new AsyncStatus();
         mResultHandler = new WeakReference<>(resultHandler);
     }
@@ -45,7 +45,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
 
             if (mStatus.isWaiting()) {
                 mStatus.started();
-                mResult = operation();
+                mResult = doLongOperation();
 
                 checkForThreadInterruption();
                 UIThreadUtility.post(this);
@@ -64,10 +64,10 @@ public abstract class TaskRunnable<T, K> implements Runnable {
         }
     }
 
-    public abstract T operation();
+    public abstract Result doLongOperation();
 
-    public void callback(T result) {}
-    public void callback(K handler, T result) {}
+    public void callback(Result result) {}
+    public void callback(ResultHandler handler, Result result) {}
 
     private void checkForThreadInterruption() throws InterruptedException {
         if (Thread.interrupted()) {
@@ -91,7 +91,7 @@ public abstract class TaskRunnable<T, K> implements Runnable {
         if (mTask == null)          return false;
         if (mResultHandler == null) return true;
 
-        K handler = mResultHandler.get();
+        ResultHandler handler = mResultHandler.get();
         return handler != null;
     }
 
