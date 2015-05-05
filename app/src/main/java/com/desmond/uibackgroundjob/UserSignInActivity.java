@@ -8,9 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.desmond.uibackgroundjobmanager.AsyncManager;
-import com.desmond.uibackgroundjobmanager.PersistedTaskRunnable;
-import com.desmond.uibackgroundjobmanager.TaskRunnable;
+import com.desmond.asyncmanager.AsyncManager;
+import com.desmond.asyncmanager.PersistedTaskRunnable;
+import com.desmond.asyncmanager.TaskRunnable;
 
 
 public class UserSignInActivity extends AppCompatActivity {

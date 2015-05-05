@@ -1,4 +1,4 @@
-package com.desmond.uibackgroundjobmanager;
+package com.desmond.asyncmanager;
 
 import android.support.annotation.NonNull;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.desmond.uibackgroundjobmanager;
+package com.desmond.asyncmanager;
 
 /**
  * Created by desmond on 3/5/15.

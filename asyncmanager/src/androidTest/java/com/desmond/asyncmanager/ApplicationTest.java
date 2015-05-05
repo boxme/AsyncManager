@@ -1,4 +1,4 @@
-package com.desmond.uibackgroundjobmanager;
+package com.desmond.asyncmanager;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

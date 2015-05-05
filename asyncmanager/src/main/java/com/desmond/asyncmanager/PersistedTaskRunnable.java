@@ -1,4 +1,4 @@
-package com.desmond.uibackgroundjobmanager;
+package com.desmond.asyncmanager;
 
 /**
  * Persisted Task that runs until it's finished with it's long background doLongOperation.

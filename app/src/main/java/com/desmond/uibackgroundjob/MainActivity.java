@@ -7,9 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.desmond.uibackgroundjobmanager.AsyncManager;
-import com.desmond.uibackgroundjobmanager.PersistedTaskRunnable;
-import com.desmond.uibackgroundjobmanager.TaskRunnable;
+import com.desmond.asyncmanager.AsyncManager;
+import com.desmond.asyncmanager.PersistedTaskRunnable;
+import com.desmond.asyncmanager.TaskRunnable;
 
 
 public class MainActivity extends AppCompatActivity {

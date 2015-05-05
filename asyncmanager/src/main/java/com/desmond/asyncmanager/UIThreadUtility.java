@@ -1,4 +1,4 @@
-package com.desmond.uibackgroundjobmanager;
+package com.desmond.asyncmanager;
 
 import android.os.Handler;
 import android.os.Looper;

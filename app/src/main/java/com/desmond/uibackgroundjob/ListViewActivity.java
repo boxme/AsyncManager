@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.desmond.uibackgroundjobmanager.AsyncManager;
-import com.desmond.uibackgroundjobmanager.TaskRunnable;
+import com.desmond.asyncmanager.AsyncManager;
+import com.desmond.asyncmanager.TaskRunnable;
 
 
 public class ListViewActivity extends AppCompatActivity {
