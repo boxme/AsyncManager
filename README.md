@@ -66,7 +66,8 @@ AsyncManager.runBackgroundTask(new TaskRunnable<Result, MainActivity>(handler) {
         return result;
     }
     
-    // handler is weakly referenced, if it has been GC, this callback will not be triggered
+    // handler is weakly referenced, if it has been GC, this callback 
+    // will not be triggered
     @Override
     public void callback(MainActivity handler, Result result) {
         // handler to handle the result
