@@ -1,0 +1,34 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.desmond.uibackgroundjob.KeepTaskRefActivity">
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="No Result"
+        android:layout_margin="20dp"
+        android:textSize="18sp"/>
+
+    <Button
+        android:id="@+id/create_task_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Task"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/result"
+        android:onClick="createTask"/>
+
+    <Button
+        android:id="@+id/delete_task_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Task"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/create_task_btn"
+        android:onClick="deleteTask"/>
+
+</RelativeLayout>

@@ -112,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void startKeepTaskRefActivity(View view) {
+        Intent intent = new Intent(this, KeepTaskRefActivity.class);
+        startActivity(intent);
+    }
+
     public void setText(String text) {
         final TextView textview = (TextView) findViewById(R.id.result);
         textview.setText(text);

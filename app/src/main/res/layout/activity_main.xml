@@ -50,11 +50,21 @@
         android:onClick="startListViewActivity"/>
 
     <Button
+        android:id="@+id/start_sharepref_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/start_listview_activity"
         android:layout_centerHorizontal="true"
         android:text="Start SharePreferences Demo"
         android:onClick="startSharePrefDemo"/>
+
+    <Button
+        android:id="@+id/start_keep_task_ref_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_sharepref_activity"
+        android:layout_centerHorizontal="true"
+        android:text="Start Keep Task Ref Demo"
+        android:onClick="startKeepTaskRefActivity"/>
 
 </RelativeLayout>
