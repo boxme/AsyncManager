@@ -89,7 +89,7 @@ AsyncManager.cancelAllNonPersistedTasks();
 AsyncManager.cancelAllTasks();
 ```
 
-### FAQ
+## FAQ
 Qn: Does this take care of configuration changes?<br />
 Ans: Yes, it does.
 
