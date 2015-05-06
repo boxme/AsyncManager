@@ -92,8 +92,8 @@ public class AsyncManager {
                     thread.interrupt();
                 }
 
-                getInstance().mTaskThreadPool.remove(runnable);
-                getInstance().mExecutingTaskWorkQueue.remove(backgroundTask);
+                sInstance.mTaskThreadPool.remove(runnable);
+                sInstance.mExecutingTaskWorkQueue.remove(backgroundTask);
             }
         }
     }
@@ -102,8 +102,8 @@ public class AsyncManager {
      * Cancels all the Threads for non persisted task in the ThreadPool
      */
     public static void cancelAllNonPersistedTasks() {
-        BackgroundTask[] taskArray = new BackgroundTask[getInstance().mExecutingTaskWorkQueue.size()];
-        getInstance().mExecutingTaskWorkQueue.toArray(taskArray);
+        BackgroundTask[] taskArray = new BackgroundTask[sInstance.mExecutingTaskWorkQueue.size()];
+        sInstance.mExecutingTaskWorkQueue.toArray(taskArray);
 
         int taskArrayLen = taskArray.length;
 
@@ -120,8 +120,8 @@ public class AsyncManager {
                     if (thread != null) {
                         thread.interrupt();
                     }
-                    getInstance().mTaskThreadPool.remove(runnable);
-                    getInstance().mExecutingTaskWorkQueue.remove(task);
+                    sInstance.mTaskThreadPool.remove(runnable);
+                    sInstance.mExecutingTaskWorkQueue.remove(task);
                 }
             }
         }
@@ -136,12 +136,12 @@ public class AsyncManager {
     }
 
     public static void cleanUp() {
-        getInstance().mTaskThreadPool.shutdown();
+        sInstance.mTaskThreadPool.shutdown();
     }
 
     public static void setThreadPoolSize(int size) {
-        getInstance().mTaskThreadPool.setCorePoolSize(size);
-        getInstance().mTaskThreadPool.setMaximumPoolSize(size);
+        sInstance.mTaskThreadPool.setCorePoolSize(size);
+        sInstance.mTaskThreadPool.setMaximumPoolSize(size);
     }
 
     /**

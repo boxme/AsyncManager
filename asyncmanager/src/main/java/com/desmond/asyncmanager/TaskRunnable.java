@@ -69,12 +69,12 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
         }
     }
 
-    public abstract Result doLongOperation();
+    public abstract Result doLongOperation() throws InterruptedException;
 
     public void callback(Result result) {}
     public void callback(ResultHandler handler, Result result) {}
 
-    private void checkForThreadInterruption() throws InterruptedException {
+    protected void checkForThreadInterruption() throws InterruptedException {
         if (Thread.interrupted()) {
             throw new InterruptedException();
         }

@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
         AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
 
             @Override
-            public String doLongOperation() {
+            public String doLongOperation() throws InterruptedException {
                 int number = 0;
+                checkForThreadInterruption();
                 for (int i = 0; i < 1000000000; i++) {
                     number++;
                 }
