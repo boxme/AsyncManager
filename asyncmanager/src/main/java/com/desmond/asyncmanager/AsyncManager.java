@@ -137,13 +137,14 @@ public class AsyncManager {
     /**
      * Terminate a specific backgroundTask. PersistedTaskRunnable will have no effects from this.
      * @param backgroundTask Terminated task
+     * @param shouldClearPersistedTask
      */
-    public static void cancelOneNonPersistedTask(BackgroundTask backgroundTask) {
+    public static void cancelOneTask(BackgroundTask backgroundTask, boolean shouldClearPersistedTask) {
         synchronized (sInstance) {
             Thread thread = backgroundTask.getCurrentThread();
             TaskRunnable runnable = backgroundTask.getTaskRunnable();
 
-            if (!runnable.mShouldPersist) {
+            if (shouldClearPersistedTask || !runnable.mShouldPersist) {
                 if (thread != null) {
                     thread.interrupt();
                 }

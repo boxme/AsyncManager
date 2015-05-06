@@ -44,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 textview.setText(result);
             }
         });
+
+        AsyncManager.runBackgroundTask(new TaskRunnable<Void, Void>() {
+            @Override
+            public Void doLongOperation() throws InterruptedException {
+                return null;
+            }
+        });
     }
 
     public void startBackgroundJobWithHandler(View view) {
