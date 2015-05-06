@@ -74,7 +74,7 @@ AsyncManager.runBackgroundTask(new TaskRunnable<Result, MainActivity>(handler) {
 });
 ```
 
-### Stop and Terminate task
+### Stop Task
 It is good to clear the task if it's no longer required, so that BackgroundTask 
 can be used for future work as soon as possible. 
 Example: clear them in onDestroyView() or onDestroy()
