@@ -1,7 +1,6 @@
 package com.desmond.asyncmanager;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
@@ -52,7 +51,6 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
     @Override
     public void run() {
-        final long threadId = Thread.currentThread().getId();
         try {
             checkForThreadInterruption();
             mTask.setCurrentThread(Thread.currentThread());
@@ -69,11 +67,8 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
             }
         } catch (InterruptedException e) {
             mStatus.cancelled();
-            Log.d(TAG, threadId + " thread is interrupted");
         } finally {
-            Log.d(TAG, threadId + " cleaning up");
             cleanUp();
-            // Clears the Thread's interrupt flag
             Thread.interrupted();
         }
     }
