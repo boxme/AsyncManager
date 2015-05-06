@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public void startBackgroundJobWithHandler(View view) {
         final TextView textview = (TextView) findViewById(R.id.result);
 
-        AsyncManager.runBackgroundTask(new TaskRunnable<String, MainActivity>() {
+        AsyncManager.runBackgroundTask(new TaskRunnable<String, MainActivity>(this) {
 
             @Override
             public String doLongOperation() {

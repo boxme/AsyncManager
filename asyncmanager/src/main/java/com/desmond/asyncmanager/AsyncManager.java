@@ -12,7 +12,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by desmond on 30/4/15.
+ * Manages all asynchronous tasks using a ThreadPoolExecutor.
+ * CORE_POOL_SIZE & MAX_POOL_SIZE are set to be equal at all times so that
+ * it remains a fixed thread pool Executor.
+ *
+ * AsyncManager exists as a Singleton. Access outside of this class should be made
+ * from AsyncManager#getInstance()
+ *
+ *
  */
 public class AsyncManager {
 
@@ -34,7 +41,7 @@ public class AsyncManager {
 
     /**
      * Limit the number of BackgroundTask that's kept in the mBackgroundTaskWorkQueue.
-     * Excess BackgroundTask can be gc after finishing from mExecutingTaskWorkQueue.
+     * Excess BackgroundTasks can be GC after finishing from mExecutingTaskWorkQueue.
      */
     private static final int MAX_QUEUE_SIZE = 8;
     private final Queue<BackgroundTask> mBackgroundTaskWorkQueue;
@@ -66,6 +73,11 @@ public class AsyncManager {
         return sInstance;
     }
 
+    /**
+     * Start a background task. It can be either TaskRunnable or PersistedTaskRunnable
+     * @param run
+     * @return BackgroundTask to be kept if manual cancellation through #cancelNonPersistedTask is required
+     */
     public static BackgroundTask runBackgroundTask(TaskRunnable run) {
         BackgroundTask backgroundTask = sInstance.mBackgroundTaskWorkQueue.poll();
 
@@ -82,7 +94,51 @@ public class AsyncManager {
         return backgroundTask;
     }
 
-    public static void cancelNonPersistedTask(BackgroundTask backgroundTask) {
+    /**
+     * Cancels all tasks, even persisted ones
+     */
+    public static void cancelAllTasks() {
+        cancelTasks(true);
+    }
+
+    /**
+     * Cancels all the Threads for non persisted task in the ThreadPool
+     */
+    public static void cancelAllNonPersistedTasks() {
+        cancelTasks(false);
+    }
+
+    private static void cancelTasks(boolean shouldClearPersistedTask) {
+        synchronized (sInstance) {
+            BackgroundTask[] taskArray = new BackgroundTask[sInstance.mExecutingTaskWorkQueue.size()];
+            sInstance.mExecutingTaskWorkQueue.toArray(taskArray);
+
+            int taskArrayLen = taskArray.length;
+
+            Thread thread;
+            TaskRunnable runnable;
+            BackgroundTask task;
+            for (int i = 0; i < taskArrayLen; i++) {
+                task = taskArray[i];
+                thread = task.getCurrentThread();
+                runnable = task.getTaskRunnable();
+
+                if (shouldClearPersistedTask || !runnable.mShouldPersist) {
+                    if (thread != null) {
+                        thread.interrupt();
+                    }
+                    sInstance.mTaskThreadPool.remove(runnable);
+                    sInstance.mExecutingTaskWorkQueue.remove(task);
+                }
+            }
+        }
+    }
+
+    /**
+     * Terminate a specific backgroundTask. PersistedTaskRunnable will have no effects from this.
+     * @param backgroundTask Terminated task
+     */
+    public static void cancelOneNonPersistedTask(BackgroundTask backgroundTask) {
         synchronized (sInstance) {
             Thread thread = backgroundTask.getCurrentThread();
             TaskRunnable runnable = backgroundTask.getTaskRunnable();
@@ -99,34 +155,10 @@ public class AsyncManager {
     }
 
     /**
-     * Cancels all the Threads for non persisted task in the ThreadPool
+     * Called by BackgroundTask in order to free itself from memory before
+     * being stored back in the BackgroundTaskWorkQueue (if it's not full) for future work.
+     * @param task
      */
-    public static void cancelAllNonPersistedTasks() {
-        BackgroundTask[] taskArray = new BackgroundTask[sInstance.mExecutingTaskWorkQueue.size()];
-        sInstance.mExecutingTaskWorkQueue.toArray(taskArray);
-
-        int taskArrayLen = taskArray.length;
-
-        synchronized (sInstance) {
-            Thread thread;
-            TaskRunnable runnable;
-            BackgroundTask task;
-            for (int i = 0; i < taskArrayLen; i++) {
-                task = taskArray[i];
-                thread = task.getCurrentThread();
-                runnable = task.getTaskRunnable();
-
-                if (!runnable.mShouldPersist) {
-                    if (thread != null) {
-                        thread.interrupt();
-                    }
-                    sInstance.mTaskThreadPool.remove(runnable);
-                    sInstance.mExecutingTaskWorkQueue.remove(task);
-                }
-            }
-        }
-    }
-
     void recycleBackgroundTask(@NonNull BackgroundTask task) {
         task.recycle();
         mExecutingTaskWorkQueue.remove(task);

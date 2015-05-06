@@ -1,7 +1,8 @@
 package com.desmond.asyncmanager;
 
 /**
- * Created by desmond on 3/5/15.
+ * BackgroundTask object that will control one TaskRunnable.
+ * TaskRunnable should ideally be accessed only by a BackgroundTask
  */
 public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
 
@@ -20,6 +21,9 @@ public class BackgroundTask implements TaskRunnable.TaskRunnableMethods {
         }
     }
 
+    /**
+     * @param currentThread Current thread that this task is being processed on
+     */
     @Override
     public void setCurrentThread(Thread currentThread) {
         synchronized (this) {

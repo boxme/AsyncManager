@@ -18,11 +18,21 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
     private BackgroundTask mTask;
     private AsyncStatus mStatus;
+
+    /**
+     * Handler that will process the result on the UI thread.
+     */
     private WeakReference<ResultHandler> mResultHandler;
+    /**
+     * Result returned after the long background operation.
+     */
     private Result mResult;
 
     boolean mShouldPersist = false;
 
+    /**
+     * Methods that will be able to control this runnable
+     */
     interface TaskRunnableMethods {
         void setCurrentThread(Thread currentThread);
         Thread getCurrentThread();
@@ -49,13 +59,12 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
             if (mStatus.isWaiting()) {
                 mStatus.started();
-                Log.d(TAG, threadId + " thread is doing long operation");
                 mResult = doLongOperation();
 
                 checkForThreadInterruption();
-                UIThreadUtility.post(this);
+                sendToUIThread();
             } else if (mStatus.isStarted()) {
-                callback();
+                callbackOnUIThread();
                 mStatus.completed();
             }
         } catch (InterruptedException e) {
@@ -74,13 +83,17 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
     public void callback(Result result) {}
     public void callback(ResultHandler handler, Result result) {}
 
+    private void sendToUIThread() {
+        UIThreadUtility.post(this);
+    }
+
     protected void checkForThreadInterruption() throws InterruptedException {
         if (Thread.interrupted()) {
             throw new InterruptedException();
         }
     }
 
-    private void callback() {
+    private void callbackOnUIThread() {
         synchronized (this) {
             if (isActive()) {
                 if (mResultHandler == null) {
@@ -92,6 +105,9 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
         }
     }
 
+    /**
+     * @return true if this runnable is still valid to be processed
+     */
     private boolean isActive() {
         if (mTask == null)          return false;
         if (mResultHandler == null) return true;
@@ -112,6 +128,10 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
         }
     }
 
+    /**
+     * Set the BackgroundTask in control of this runnable
+     * @param task
+     */
     void setTask(BackgroundTask task) {
         mTask = task;
     }

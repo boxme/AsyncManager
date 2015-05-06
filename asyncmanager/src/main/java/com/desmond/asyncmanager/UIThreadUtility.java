@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * Created by desmond on 3/5/15.
+ * UI Thread Utility that has a handler attached to the UI thread's looper
  */
 public class UIThreadUtility {
     private static Handler mHandler;

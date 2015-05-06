@@ -1,7 +1,7 @@
 package com.desmond.asyncmanager;
 
 /**
- * Created by desmond on 3/5/15.
+ * State of a TaskRunnable during its entire lifecycle in the thread.
  */
 public class AsyncStatus {
 
