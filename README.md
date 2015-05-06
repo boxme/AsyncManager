@@ -1,8 +1,8 @@
 # AsyncManager
 ## Description
 AsyncManager hopes to keep management of background threads as simple as possible, 
-by keeping the creation and termination of background tasks to just one API call.
-Callback, which will be processed on the Main Thread, can be overridden to 
+by keeping the creation and termination of background tasks to just one API call respectively.
+Callback, which will be processed on the UI thread, can be overridden to 
 process the result returned from the background operation.
 
 ## SDK Support
@@ -102,4 +102,6 @@ API level | execute | executeOnExecutor
 --- | --- | ---
 11 - 12 | Concurrent | Sequential/concurrent (customizable)
 13+ | Sequential | Sequential/concurrent (customizable)
-If all you need is one single thread to process your background thread sequentially, you can consider IntentService
+Furthermore, all AsyncTask instances also share an application-wide, global execution property. This means that if two different threads launch two different instances at the same time, they will still be executed sequentially.<br>
+
+If all you need is one single thread to process your background thread sequentially, you can consider using IntentService.
