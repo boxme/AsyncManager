@@ -14,7 +14,7 @@ SDK Version 11 & above
 * Prevent memory leaks from the usual pitfalls of background threads & AsyncTask.
 * Runs all operations asynhcronously over 4 threads. (More can be set through the API)
 
-## Usage
+## Usage 
 ### Instantiation
 AsyncManager will be instantiated automatically as a Singleton.
 
@@ -88,6 +88,7 @@ AsyncManager.cancelAllNonPersistedTasks();
 // To clear all tasks, including persisted ones
 AsyncManager.cancelAllTasks();
 ```
+#### Check out the code examples within the app module for more.
 
 ## FAQ
 Qn: Does this take care of configuration changes?<br />
