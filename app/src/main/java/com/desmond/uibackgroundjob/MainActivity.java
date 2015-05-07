@@ -1,6 +1,7 @@
 package com.desmond.uibackgroundjob;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -40,15 +41,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void callback(String result) {
                 for (int i = 0; i < 10000000; i++) {
+
                 }
                 textview.setText(result);
-            }
-        });
-
-        AsyncManager.runBackgroundTask(new TaskRunnable<Void, Void>() {
-            @Override
-            public Void doLongOperation() throws InterruptedException {
-                return null;
             }
         });
     }

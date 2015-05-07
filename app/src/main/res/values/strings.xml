@@ -6,4 +6,5 @@
     <string name="title_activity_list_view_acitvity">ListViewAcitvity</string>
     <string name="title_activity_user_sign_in">UserSignInActivity</string>
     <string name="title_activity_keep_task_ref">KeepTaskRefActivity</string>
+    <string name="title_activity_fragment">FragmentActivity</string>
 </resources>
