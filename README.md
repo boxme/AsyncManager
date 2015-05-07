@@ -106,6 +106,7 @@ AsyncTask termination also requires you to keep a reference to the executed task
 AsyncManager is already keeping track of all your background tasks and you can terminate all of them with just 1 API call. As stated above, you will still be able to keep a reference to the started task if you want to terminate them selectively. 
 
 Execution differences on different platform version can also be a hassle to manage. 
+
 API level | execute | executeOnExecutor
 --- | --- | ---
 11 - 12 | Concurrent | Sequential/concurrent (customizable)
