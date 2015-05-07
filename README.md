@@ -1,4 +1,5 @@
 # AsyncManager
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AsyncManager-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1763)
 ## Description
 AsyncManager hopes to keep management of background threads as simple as possible, 
 by keeping the creation and termination of background tasks to just one API call respectively.
