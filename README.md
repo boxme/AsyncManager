@@ -13,7 +13,7 @@ SDK Version 11 & above (Lower version is not tested)
 * Create & maintain background threads for you.
 * Contain callbacks to handle the result from a background job.
 * Prevent memory leaks from the usual pitfalls of background threads & AsyncTask.
-* Runs all operations asynhcronously over 4 threads. (More can be set through the API)
+* Runs all operations asynchronously over 4 threads. (More can be set through the API)
 
 ## Usage 
 ### Instantiation
