@@ -6,7 +6,7 @@ Callback, which will be processed on the UI thread, can be overridden to
 process the result returned from the background operation.
 
 ## SDK Support
-SDK Version 11 & above
+SDK Version 11 & above (Lower version is not tested)
 
 ## Features
 * Create & maintain background threads for you.
@@ -96,12 +96,20 @@ Qn: Does this take care of configuration changes?<br />
 Ans: Yes, it does.
 
 Qn: Why not just use the AsyncTask?<br />
-Ans: Execution differences on different platform version can be a hassle to manage. 
+Ans: 
+If your AsyncTasks are required to run concurrently, an easy way to do so is to execute using THREAD_POOL_EXECUTOR. On a quad-core device, this means that any up to 5 AsyncTasks can be handled concurrently, If a 6th task is started before the any of the previous 5 is done, it will be placed in the waiting queue. The way to increase the number of concurrent tasks executed is to implement your own custom Executor. <br>
 
+This library hopes to keep that simple for you, you can increase the number easily by AsyncManager.setThreadPoolSize(int) <br>
+
+AsyncTask termination also requires you to keep a reference to the executed task individually, and terminate them when you no longer require them to continue its operations. This result in a lot more code and management on the developer's part. 
+
+AsyncManager is already keeping track of all your background tasks and you can terminate all of them with just 1 API call. As stated above, you will still be able to keep a reference to the started task if you want to terminate them selectively. 
+
+Execution differences on different platform version can also be a hassle to manage. 
 API level | execute | executeOnExecutor
 --- | --- | ---
 11 - 12 | Concurrent | Sequential/concurrent (customizable)
 13+ | Sequential | Sequential/concurrent (customizable)
 Furthermore, all AsyncTask instances also share an application-wide, global execution property. This means that if two different threads launch two different instances at the same time, they will still be executed sequentially.<br>
 
-If all you need is one single thread to process your background thread sequentially, you can consider using IntentService.
+If all you need is one single thread to process your background thread sequentially, you should consider using IntentService.
