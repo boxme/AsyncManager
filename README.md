@@ -22,7 +22,7 @@ AsyncManager will be instantiated automatically as a Singleton.
 ### Start Background Task
 Start a background task. Assign the type of result expected, if any. 
 You can use the API checkForThreadInterruption() to check for early termination
-```
+```java
 // A BackgroundTask object will be returned from this method. Reference it if require.
 AsyncManager.runBackgroundTask(new TaskRunnable<Result, Void>() {
     @Override
@@ -41,7 +41,7 @@ AsyncManager.runBackgroundTask(new TaskRunnable<Result, Void>() {
 ```
 
 Start a background task that will be persisted and allowed to run till its completion
-```
+```java
 AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Result, Void>() {
     @Override
     public Result doLongOperation() throws InterruptedException {
@@ -58,7 +58,7 @@ AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Result, Void>() {
 ```
 
 Start a background task that will assign a handler to handle the result
-```
+```java
 AsyncManager.runBackgroundTask(new TaskRunnable<Result, MainActivity>(handler) {
     @Override
     public ResultType doLongOperation() throws InterruptedException {
@@ -80,7 +80,7 @@ AsyncManager.runBackgroundTask(new TaskRunnable<Result, MainActivity>(handler) {
 It is good to clear the task if it's no longer required, so that BackgroundTask 
 can be used for future work as soon as possible. 
 Example: clear them in onDestroyView() or onDestroy()
-```
+```java
 // Cancel one task
 AsyncManager.cancelOneTask(BackgroundTask, boolean shouldClearPersistedTask);
 
