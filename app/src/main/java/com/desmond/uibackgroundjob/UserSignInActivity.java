@@ -3,6 +3,7 @@ package com.desmond.uibackgroundjob;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import com.desmond.asyncmanager.TaskRunnable;
 
 public class UserSignInActivity extends AppCompatActivity {
 
+    public static final String TAG = UserSignInActivity.class.getSimpleName();
+
     private EditText mUserNameEditText;
     private EditText mEmailEditText;
 
@@ -26,9 +29,10 @@ public class UserSignInActivity extends AppCompatActivity {
         mUserNameEditText = (EditText) findViewById(R.id.username_edittext);
         mEmailEditText = (EditText) findViewById(R.id.email_edittext);
 
-        AsyncManager.runBackgroundTask(new TaskRunnable<String[], Void>() {
+        AsyncManager.runBackgroundTask(new TaskRunnable<Void, String[], Void>() {
+
             @Override
-            public String[] doLongOperation() {
+            public String[] doLongOperation(Void aVoid) throws InterruptedException {
                 String[] results = new String[2];
                 results[0] = DemoApplication.getUserName();
                 results[1] = DemoApplication.getUserEmail();
@@ -65,15 +69,10 @@ public class UserSignInActivity extends AppCompatActivity {
         final String email = mEmailEditText.getText().toString();
 
         if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(email)) {
-            AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Void, Void>() {
-
-                @Override
-                public Void doLongOperation() {
-                    DemoApplication.saveUserName(userName);
-                    DemoApplication.saveUserEmail(email);
-                    return null;
-                }
-            });
+            String[] params = new String[2];
+            params[0] = userName;
+            params[1] = email;
+            AsyncManager.runBackgroundTask(new SetUserInfoTask().setParams(params));
 
             finish();
         }
@@ -83,5 +82,17 @@ public class UserSignInActivity extends AppCompatActivity {
     protected void onDestroy() {
         AsyncManager.cancelAllNonPersistedTasks();
         super.onDestroy();
+    }
+
+    private static class SetUserInfoTask extends PersistedTaskRunnable<String[], Void, Void> {
+
+        @Override
+        public Void doLongOperation(String[] strings) throws InterruptedException {
+            Log.d(TAG, strings[0] + " " + strings[1]);
+            DemoApplication.saveUserName(strings[0]);
+            DemoApplication.saveUserEmail(strings[1]);
+            Log.d(TAG, "User info saved");
+            return null;
+        }
     }
 }

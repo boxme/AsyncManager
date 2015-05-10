@@ -11,12 +11,14 @@ import java.lang.ref.WeakReference;
  * @param <Result> Expected result type from the #doLongOperation()
  * @param <ResultHandler> Handler that might be required to handle the result on the UI thread
  */
-public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
+public abstract class TaskRunnable<Params, Result, ResultHandler> implements Runnable {
 
     private static final String TAG = TaskRunnable.class.getSimpleName();
 
     private BackgroundTask mTask;
     private AsyncStatus mStatus;
+
+    private Params mParams;
 
     /**
      * Handler that will process the result on the UI thread.
@@ -41,12 +43,26 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
     public TaskRunnable() {
         mStatus = new AsyncStatus();
+        mParams = null;
         mResultHandler = null;
     }
 
-    public TaskRunnable(@NonNull ResultHandler resultHandler) {
-        mStatus = new AsyncStatus();
+//    public TaskRunnable(Params params, ResultHandler resultHandler) {
+//        mStatus = new AsyncStatus();
+//        mParams = params;
+//        if (resultHandler != null) {
+//            mResultHandler = new WeakReference<>(resultHandler);
+//        }
+//    }
+
+    public TaskRunnable setParams(@NonNull Params params) {
+        mParams = params;
+        return this;
+    }
+
+    public TaskRunnable setResultHandler(@NonNull ResultHandler resultHandler) {
         mResultHandler = new WeakReference<>(resultHandler);
+        return this;
     }
 
     @Override
@@ -57,7 +73,7 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
 
             if (mStatus.isWaiting()) {
                 mStatus.started();
-                mResult = doLongOperation();
+                mResult = doLongOperation(mParams);
 
                 checkForThreadInterruption();
                 sendToUIThread();
@@ -73,7 +89,7 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
         }
     }
 
-    public abstract Result doLongOperation() throws InterruptedException;
+    public abstract Result doLongOperation(Params params) throws InterruptedException;
 
     public void callback(Result result) {}
     public void callback(ResultHandler handler, Result result) {}
@@ -116,6 +132,7 @@ public abstract class TaskRunnable<Result, ResultHandler> implements Runnable {
             if (mTask != null && mStatus.isCleanable()) {
                 mTask.completedJob();
                 mStatus.isWaiting();
+                mParams = null;
                 mResult = null;
                 mResultHandler = null;
                 mTask = null;

@@ -94,9 +94,10 @@ public class ListViewActivity extends AppCompatActivity {
             final TextView textView = viewHolder.textView;
             textView.setTag(false);
             if (mIsUsingAsyncManager) {
-                AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+                AsyncManager.runBackgroundTask(new TaskRunnable<Void, String, Void>() {
+
                     @Override
-                    public String doLongOperation() {
+                    public String doLongOperation(Void aVoid) throws InterruptedException {
                         int value = 0;
                         for (int i = 0; i < 10000000; ++i) {
                             value++;
@@ -114,15 +115,17 @@ public class ListViewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         textView.setTag(true);
-                        AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+                        AsyncManager.runBackgroundTask(new TaskRunnable<Void, String, Void>() {
+
                             @Override
-                            public String doLongOperation() {
+                            public String doLongOperation(Void aVoid) throws InterruptedException {
                                 int value = 0;
                                 for (int i = 0; i < 200000000; ++i) {
                                     value++;
                                 }
                                 return value + "";
                             }
+
 
                             @Override
                             public void callback(String s) {

@@ -48,10 +48,10 @@ public class KeepTaskRefActivity extends AppCompatActivity {
     }
 
     public void createTask(View view) {
-        mTask = AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+        mTask = AsyncManager.runBackgroundTask(new TaskRunnable<Void, String, Void>() {
 
             @Override
-            public String doLongOperation() throws InterruptedException {
+            public String doLongOperation(Void aVoid) throws InterruptedException {
                 int number = 0;
                 checkForThreadInterruption();
                 for (int i = 0; i < 1000000000; i++) {

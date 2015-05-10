@@ -1,7 +1,6 @@
 package com.desmond.uibackgroundjob;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,10 +25,10 @@ public class MainActivity extends AppCompatActivity {
     public void startBackgroundJob(View view) {
         final TextView textview = (TextView) findViewById(R.id.result);
 
-        AsyncManager.runBackgroundTask(new TaskRunnable<String, Void>() {
+        AsyncManager.runBackgroundTask(new TaskRunnable<Void, String, Void>() {
 
             @Override
-            public String doLongOperation() throws InterruptedException {
+            public String doLongOperation(Void empty) throws InterruptedException {
                 int number = 0;
                 checkForThreadInterruption();
                 for (int i = 0; i < 1000000000; i++) {
@@ -51,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
     public void startBackgroundJobWithHandler(View view) {
         final TextView textview = (TextView) findViewById(R.id.result);
 
-        AsyncManager.runBackgroundTask(new TaskRunnable<String, MainActivity>(this) {
+        AsyncManager.runBackgroundTask(new TaskRunnable<Void, String, MainActivity>() {
 
             @Override
-            public String doLongOperation() {
+            public String doLongOperation(Void aVoid) throws InterruptedException {
                 int number = 0;
                 for (int i = 0; i < 1000000000; i++) {
                     number++;
@@ -74,27 +73,11 @@ public class MainActivity extends AppCompatActivity {
                 mainActivity.setText("result with handler");
                 Log.d(TAG, "handler result");
             }
-        });
+        }.setResultHandler(this));
     }
 
     public void startPersistedTask(View view) {
-        AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Void, Void>() {
-
-            @Override
-            public Void doLongOperation() {
-                int number = 0;
-                for (int i = 0; i < 900000000; i++) {
-                    number++;
-                }
-                Log.d(TAG, "number is " + number);
-                return null;
-            }
-
-            @Override
-            public void callback(Void aVoid) {
-                for (int i = 0; i < 10000000; i++) {}
-            }
-        });
+        AsyncManager.runBackgroundTask(new MainActivityPersistedTask().setResultHandler(this));
     }
 
     public void startListViewActivity(View view) {
@@ -121,5 +104,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         AsyncManager.cancelAllNonPersistedTasks();
         super.onDestroy();
+    }
+
+    private static class MainActivityPersistedTask
+            extends PersistedTaskRunnable<Void, Void, MainActivity> {
+
+        @Override
+        public Void doLongOperation(Void aVoid) throws InterruptedException {
+            int number = 0;
+            for (int i = 0; i < 900000000; i++) {
+                number++;
+            }
+            Log.d(TAG, "number is " + number);
+            return null;
+        }
+
+        @Override
+        public void callback(MainActivity mainActivity, Void aVoid) {
+        }
     }
 }
