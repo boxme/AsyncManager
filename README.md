@@ -12,6 +12,7 @@ SDK Version 11 & above (Lower version is not tested)
 ## Features
 * Create & maintain background threads for you.
 * Contain callbacks to handle the result from a background job.
+* Pass in data to be used in the long operation.
 * Prevent memory leaks from the usual pitfalls of background threads & AsyncTask.
 * Runs all operations asynchronously over 4 threads. (More can be set through the API)
 
@@ -20,13 +21,15 @@ SDK Version 11 & above (Lower version is not tested)
 AsyncManager will be instantiated automatically as a Singleton.
 
 ### Start Background Task
-Start a background task. Assign the type of result expected, if any. 
-You can use the API checkForThreadInterruption() to check for early termination
+Start a background task. Assign the type of result expected, if any. Extra data for the operation can also
+be passed in through #setParams(). Otherwise, Void it.
+You can use the API checkForThreadInterruption() to check for early termination, especially for extremely long
+running operation.
 ```java
 // A BackgroundTask object will be returned from this method. Reference it if require.
-AsyncManager.runBackgroundTask(new TaskRunnable<Result, Void>() {
+AsyncManager.runBackgroundTask(new TaskRunnable<Params, Result, Void>() {
     @Override
-    public Result doLongOperation() throws InterruptedException {
+    public Result doLongOperation(Params params) throws InterruptedException {
         // checkForThreadInterruption();
         // Your long operation
         return result;
@@ -37,14 +40,16 @@ AsyncManager.runBackgroundTask(new TaskRunnable<Result, Void>() {
     public void callback(Result result) {
         // Handle the result from doLongOperation()
     }
-});
+}.setParams(params));
 ```
 
-Start a background task that will be persisted and allowed to run till its completion
+Start a background task that will be persisted and allowed to run till its completion. It's still a best practice
+to instantiate it as a static inner class first before using.
 ```java
-AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Result, Void>() {
+// Bad practice if your long operation is extremely time consuming.
+AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Void, Result, Void>() {
     @Override
-    public Result doLongOperation() throws InterruptedException {
+    public Result doLongOperation(Void void) throws InterruptedException {
         // Your long operation
         return result;
     }
@@ -55,11 +60,26 @@ AsyncManager.runBackgroundTask(new PersistedTaskRunnable<Result, Void>() {
         // Handle the result from doLongOperation()
     }
 });
+
+// Instantiate it first as a static inner class
+private static class LongBackGroundPersistedTask extends PersistedTaskRunnable<String[], Void, Void> {
+
+    @Override
+    public Void doLongOperation(String[] strings) throws InterruptedException {
+        // Long operation
+        return null;
+    }
+}
+
+String[] params = new String[2];
+params[0] = "data";
+params[1] = "data;
+AsyncManager.runBackgroundTask(new LongBackGroundPersistedTask().setParams(params));
 ```
 
 Start a background task that will assign a handler to handle the result
 ```java
-AsyncManager.runBackgroundTask(new TaskRunnable<Result, MainActivity>(handler) {
+AsyncManager.runBackgroundTask(new TaskRunnable<Void, Result, MainActivity>() {
     @Override
     public ResultType doLongOperation() throws InterruptedException {
         // checkForThreadInterruption();
@@ -73,7 +93,7 @@ AsyncManager.runBackgroundTask(new TaskRunnable<Result, MainActivity>(handler) {
     public void callback(MainActivity handler, Result result) {
         // handler to handle the result
     }
-});
+}.setResultHandler(MainActivity));
 ```
 
 ### Stop Task
@@ -94,7 +114,7 @@ AsyncManager.cancelAllTasks();
 
 ## FAQ
 Qn: Does this take care of configuration changes?<br />
-Ans: Yes, it does.
+Ans: UI updates will not be delivered because the tasks should be cancelled by the API as soon as possible if it's not required, hence it's important to check for any thread interruptions using #checkForThreadInterruption() in the long running operation. #cancelAllNonPersistedTasks() will then be able to clean up the tasks and free the memory in used.
 
 Qn: Why not just use the AsyncTask?<br />
 Ans: 
