@@ -47,6 +47,14 @@ public class ListViewActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.use_asycn_manager) {
+            if (item.isChecked()) {
+                item.setChecked(false);
+            } else {
+                item.setChecked(true);
+            }
+            mAdapter.setIsUsingAsyncManager(item.isChecked());
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -157,6 +165,10 @@ public class ListViewActivity extends AppCompatActivity {
             }
 
             return convertView;
+        }
+
+        public void setIsUsingAsyncManager(boolean isUsing) {
+            mIsUsingAsyncManager = isUsing;
         }
 
         private static class ViewHolder {
