@@ -15,6 +15,14 @@ SDK Version 11 & above (Lower version is not tested)
 * Pass in data to be used in the long operation.
 * Prevent memory leaks from the usual pitfalls of background threads & AsyncTask.
 * Runs all operations asynchronously over 4 threads. (More can be set through the API)
+ 
+## Download
+Gradle:
+```
+dependencies {
+    compile 'com.github.boxme:asyncmanager:1.0.0'
+}
+```
 
 ## Usage 
 ### Instantiation
