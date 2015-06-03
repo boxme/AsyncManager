@@ -17,8 +17,12 @@ SDK Version 11 & above (Lower version is not tested)
 * Runs all operations asynchronously over 4 threads. (More can be set through the API)
  
 ## Download
-Gradle:
+Maven:
 ```
+repositories {
+    maven { url "http://dl.bintray.com/populov/maven" }
+}
+
 dependencies {
     compile 'com.github.boxme:asyncmanager:1.0.0'
 }
