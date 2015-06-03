@@ -2,12 +2,16 @@ package com.desmond.asyncmanager;
 
 import android.support.annotation.IntDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * State of a TaskRunnable during its entire lifecycle in the thread.
  */
 public class AsyncStatus {
 
     @IntDef({STATE_ACTION_CANCELLED, STATE_ACTION_WAITING, STATE_ACTION_STARTED, STATE_ACTION_COMPLETED})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface AsyncStatusState {}
     public static final int STATE_ACTION_CANCELLED = -1;
     public static final int STATE_ACTION_WAITING = 0;
