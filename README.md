@@ -27,7 +27,16 @@ dependencies {
     compile 'com.github.boxme:asyncmanager:1.0.0'
 }
 ```
+jCenter:
+```
+repositories {
+    jcenter()
+}
 
+dependencies {
+    compile 'com.github.boxme:asyncmanager:1.0.0'
+}
+```
 ## Usage 
 ### Instantiation
 AsyncManager will be instantiated automatically as a Singleton.
